@@ -1,0 +1,51 @@
+﻿services:
+  pastebin.api:
+    image: pastebin.api
+    build:
+      context: .
+      dockerfile: backend/Pastebin.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+      
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pastebindb
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+    
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    networks:
+      - mynetwork
+  
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /path/to/local/dаta:/root/redis
+      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - mynetwork
+    environment:
+      - REDIS_PORT=6379
+volumes:
+  pgdata:
+
+networks:
+  mynetwork:
+    driver: bridge
